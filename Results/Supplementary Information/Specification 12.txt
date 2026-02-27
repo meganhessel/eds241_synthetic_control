@@ -1,0 +1,29 @@
+$treated
+[1] "United Kingdom"
+
+$donor.pool
+ [1] "United Arab Emirates" "Argentina"            "Australia"            "Austria"             
+ [5] "Belgium"              "Bahrain"              "Bahamas"              "Brazil"              
+ [9] "Barbados"             "Brunei"               "Botswana"             "Canada"              
+[13] "Switzerland"          "Chile"                "Cyprus"               "Germany"             
+[17] "Spain"                "France"               "Gabon"                "Greece"              
+[21] "Hong Kong"            "Hungary"              "Ireland"              "Iceland"             
+[25] "Israel"               "Italy"                "Japan"                "South Korea"         
+[29] "Kuwait"               "Lebanon"              "Libya"                "Luxembourg"          
+[33] "Macao"                "Mexico"               "Malta"                "Mauritius"           
+[37] "Malaysia"             "New Zealand"          "Oman"                 "Panama"              
+[41] "Poland"               "Portugal"             "Qatar"                "Saudi Arabia"        
+[45] "Singapore"            "Trinidad & Tobago"    "Turkey"               "Uruguay"             
+[49] "United States"        "Venezuela"            "South Africa"        
+
+$predictors
+ [1] "special.EN.ATM.CO2E.PC.demean.1990" "special.EN.ATM.CO2E.PC.demean.1991"
+ [3] "special.EN.ATM.CO2E.PC.demean.1992" "special.EN.ATM.CO2E.PC.demean.1993"
+ [5] "special.EN.ATM.CO2E.PC.demean.1994" "special.EN.ATM.CO2E.PC.demean.1995"
+ [7] "special.EN.ATM.CO2E.PC.demean.1996" "special.EN.ATM.CO2E.PC.demean.1997"
+ [9] "special.EN.ATM.CO2E.PC.demean.1998" "special.EN.ATM.CO2E.PC.demean.1999"
+[11] "special.EN.ATM.CO2E.PC.demean.2000"
+
+$time.optimize
+ [1] 1990 1991 1992 1993 1994 1995 1996 1997 1998 1999 2000 2001
+

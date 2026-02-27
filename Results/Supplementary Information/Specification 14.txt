@@ -1,0 +1,20 @@
+$treated
+[1] "United Kingdom"
+
+$donor.pool
+ [1] "Australia"     "Austria"       "Belgium"       "Canada"        "Switzerland"   "Germany"      
+ [7] "Spain"         "France"        "Greece"        "Hungary"       "Ireland"       "Iceland"      
+[13] "Italy"         "Japan"         "South Korea"   "Luxembourg"    "Mexico"        "New Zealand"  
+[19] "Poland"        "Portugal"      "Turkey"        "United States"
+
+$predictors
+ [1] "special.EN.ATM.CO2E.PC.demean.1990" "special.EN.ATM.CO2E.PC.demean.1991"
+ [3] "special.EN.ATM.CO2E.PC.demean.1992" "special.EN.ATM.CO2E.PC.demean.1993"
+ [5] "special.EN.ATM.CO2E.PC.demean.1994" "special.EN.ATM.CO2E.PC.demean.1995"
+ [7] "special.EN.ATM.CO2E.PC.demean.1996" "special.EN.ATM.CO2E.PC.demean.1997"
+ [9] "special.EN.ATM.CO2E.PC.demean.1998" "special.EN.ATM.CO2E.PC.demean.1999"
+[11] "special.EN.ATM.CO2E.PC.demean.2000"
+
+$time.optimize
+ [1] 1990 1991 1992 1993 1994 1995 1996 1997 1998 1999 2000 2001
+

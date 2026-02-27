@@ -1,0 +1,48 @@
+[[1]]
+                          Treated Synthetic Sample Mean v.weights
+special.rescaled2000.1990 1.026   1.029     0.86        0.154    
+special.rescaled2000.1991 1.046   1.037     0.84        0.091    
+special.rescaled2000.1992 1.027   1.023     0.865       0.116    
+special.rescaled2000.1993 1.007   1.013     0.887       0.087    
+special.rescaled2000.1994 1.009   1.011     0.9         0.071    
+special.rescaled2000.1995 0.993   0.991     0.902       0.101    
+special.rescaled2000.1996 1.018   1.016     0.926       0.1      
+special.rescaled2000.1997 0.973   0.974     0.946       0.174    
+special.rescaled2000.1998 0.982   0.983     0.964       0.042    
+special.rescaled2000.1999 0.98    0.981     0.965       0.064    
+
+[[2]]
+    w.weights           unit.names unit.numbers
+4       0.000 United Arab Emirates            4
+9       0.000            Australia            9
+10      0.241              Austria           10
+12      0.044              Belgium           12
+16      0.155              Bahamas           16
+23      0.025               Brunei           23
+25      0.000               Canada           25
+26      0.000          Switzerland           26
+35      0.000               Cyprus           35
+37      0.001              Germany           37
+43      0.003                Spain           43
+47      0.004               France           47
+55      0.001               Greece           55
+61      0.000            Hong Kong           61
+63      0.000              Hungary           63
+66      0.000              Ireland           66
+69      0.000              Iceland           69
+70      0.000               Israel           70
+71      0.008                Italy           71
+74      0.291                Japan           74
+79      0.000          South Korea           79
+80      0.000               Kuwait           80
+88      0.159           Luxembourg           88
+90      0.000                Macao           90
+94      0.000               Mexico           94
+110     0.000          New Zealand          110
+117     0.063               Poland          117
+119     0.001             Portugal          119
+122     0.000                Qatar          122
+127     0.000            Singapore          127
+144     0.001               Turkey          144
+149     0.000        United States          149
+

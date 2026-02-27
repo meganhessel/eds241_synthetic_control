@@ -1,0 +1,38 @@
+[[1]]
+                          Treated Synthetic Sample Mean v.weights
+special.rescaled1990.1991 1.02    1.014     1.007       0.003    
+special.rescaled1990.1992 1.001   1         1.014       0.046    
+special.rescaled1990.1993 0.982   0.988     1.025       0.034    
+special.rescaled1990.1994 0.983   0.982     1.034       0.04     
+special.rescaled1990.1995 0.968   0.958     1.048       0.071    
+special.rescaled1990.1996 0.992   0.99      1.09        0.119    
+special.rescaled1990.1997 0.949   0.959     1.11        0.146    
+special.rescaled1990.1998 0.957   0.958     1.113       0.15     
+special.rescaled1990.1999 0.955   0.956     1.135       0.284    
+special.rescaled1990.2000 0.975   0.972     1.162       0.108    
+
+[[2]]
+    w.weights    unit.names unit.numbers
+9       0.000     Australia            9
+10      0.000       Austria           10
+12      0.156       Belgium           12
+25      0.000        Canada           25
+26      0.000   Switzerland           26
+37      0.174       Germany           37
+43      0.000         Spain           43
+47      0.192        France           47
+55      0.000        Greece           55
+63      0.000       Hungary           63
+66      0.000       Ireland           66
+69      0.000       Iceland           69
+71      0.067         Italy           71
+74      0.219         Japan           74
+79      0.000   South Korea           79
+88      0.190    Luxembourg           88
+94      0.000        Mexico           94
+110     0.000   New Zealand          110
+117     0.002        Poland          117
+119     0.000      Portugal          119
+144     0.000        Turkey          144
+149     0.000 United States          149
+

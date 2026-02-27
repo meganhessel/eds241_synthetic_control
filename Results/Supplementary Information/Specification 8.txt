@@ -1,0 +1,18 @@
+$treated
+[1] "United Kingdom"
+
+$donor.pool
+ [1] "Australia"     "Austria"       "Belgium"       "Canada"        "Switzerland"   "Germany"      
+ [7] "Spain"         "France"        "Greece"        "Hungary"       "Ireland"       "Iceland"      
+[13] "Italy"         "Japan"         "South Korea"   "Luxembourg"    "Mexico"        "New Zealand"  
+[19] "Poland"        "Portugal"      "Turkey"        "United States"
+
+$predictors
+ [1] "special.rescaled1990.1991" "special.rescaled1990.1992" "special.rescaled1990.1993"
+ [4] "special.rescaled1990.1994" "special.rescaled1990.1995" "special.rescaled1990.1996"
+ [7] "special.rescaled1990.1997" "special.rescaled1990.1998" "special.rescaled1990.1999"
+[10] "special.rescaled1990.2000"
+
+$time.optimize
+ [1] 1990 1991 1992 1993 1994 1995 1996 1997 1998 1999 2000 2001
+

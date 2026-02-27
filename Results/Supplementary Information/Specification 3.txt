@@ -1,0 +1,31 @@
+$treated
+[1] "United Kingdom"
+
+$donor.pool
+ [1] "United Arab Emirates" "Argentina"            "Australia"            "Austria"             
+ [5] "Belgium"              "Bahrain"              "Bahamas"              "Brazil"              
+ [9] "Barbados"             "Brunei"               "Botswana"             "Canada"              
+[13] "Switzerland"          "Chile"                "Cyprus"               "Germany"             
+[17] "Spain"                "France"               "Gabon"                "Greece"              
+[21] "Hong Kong"            "Hungary"              "Ireland"              "Iceland"             
+[25] "Israel"               "Italy"                "Japan"                "South Korea"         
+[29] "Kuwait"               "Lebanon"              "Libya"                "Luxembourg"          
+[33] "Macao"                "Mexico"               "Malta"                "Mauritius"           
+[37] "Malaysia"             "New Zealand"          "Oman"                 "Panama"              
+[41] "Poland"               "Portugal"             "Qatar"                "Saudi Arabia"        
+[45] "Singapore"            "Trinidad & Tobago"    "Turkey"               "Uruguay"             
+[49] "United States"        "Venezuela"            "South Africa"        
+
+$predictors
+ [1] "special.EN.ATM.CO2E.PC.1980" "special.EN.ATM.CO2E.PC.1981" "special.EN.ATM.CO2E.PC.1982"
+ [4] "special.EN.ATM.CO2E.PC.1983" "special.EN.ATM.CO2E.PC.1984" "special.EN.ATM.CO2E.PC.1985"
+ [7] "special.EN.ATM.CO2E.PC.1986" "special.EN.ATM.CO2E.PC.1987" "special.EN.ATM.CO2E.PC.1988"
+[10] "special.EN.ATM.CO2E.PC.1989" "special.EN.ATM.CO2E.PC.1990" "special.EN.ATM.CO2E.PC.1991"
+[13] "special.EN.ATM.CO2E.PC.1992" "special.EN.ATM.CO2E.PC.1993" "special.EN.ATM.CO2E.PC.1994"
+[16] "special.EN.ATM.CO2E.PC.1995" "special.EN.ATM.CO2E.PC.1996" "special.EN.ATM.CO2E.PC.1997"
+[19] "special.EN.ATM.CO2E.PC.1998" "special.EN.ATM.CO2E.PC.1999" "special.EN.ATM.CO2E.PC.2000"
+
+$time.optimize
+ [1] 1980 1981 1982 1983 1984 1985 1986 1987 1988 1989 1990 1991 1992 1993 1994 1995 1996 1997 1998 1999 2000
+[22] 2001
+

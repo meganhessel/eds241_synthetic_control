@@ -1,0 +1,39 @@
+[[1]]
+                                   Treated Synthetic Sample Mean v.weights
+special.EN.ATM.CO2E.PC.demean.1990 0.321   0.328     0.022       0.111    
+special.EN.ATM.CO2E.PC.demean.1991 0.481   0.452     -0.019      0.081    
+special.EN.ATM.CO2E.PC.demean.1992 0.271   0.282     -0.064      0.089    
+special.EN.ATM.CO2E.PC.demean.1993 0.065   0.108     -0.04       0.149    
+special.EN.ATM.CO2E.PC.demean.1994 0.059   0.051     -0.084      0.109    
+special.EN.ATM.CO2E.PC.demean.1995 -0.115  -0.205    -0.215      0.019    
+special.EN.ATM.CO2E.PC.demean.1996 0.091   0.078     0.054       0.053    
+special.EN.ATM.CO2E.PC.demean.1997 -0.347  -0.243    0.057       0.09     
+special.EN.ATM.CO2E.PC.demean.1998 -0.295  -0.297    -0.017      0.122    
+special.EN.ATM.CO2E.PC.demean.1999 -0.342  -0.327    0.072       0.116    
+special.EN.ATM.CO2E.PC.demean.2000 -0.19   -0.227    0.233       0.06     
+
+[[2]]
+    w.weights    unit.names unit.numbers
+9       0.000     Australia            9
+10      0.000       Austria           10
+12      0.151       Belgium           12
+25      0.000        Canada           25
+26      0.000   Switzerland           26
+37      0.098       Germany           37
+43      0.000         Spain           43
+47      0.316        France           47
+55      0.000        Greece           55
+63      0.000       Hungary           63
+66      0.000       Ireland           66
+69      0.000       Iceland           69
+71      0.053         Italy           71
+74      0.315         Japan           74
+79      0.000   South Korea           79
+88      0.068    Luxembourg           88
+94      0.000        Mexico           94
+110     0.000   New Zealand          110
+117     0.000        Poland          117
+119     0.000      Portugal          119
+144     0.000        Turkey          144
+149     0.000 United States          149
+

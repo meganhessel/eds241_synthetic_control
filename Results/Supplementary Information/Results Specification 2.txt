@@ -1,0 +1,58 @@
+[[1]]
+                            Treated  Synthetic Sample Mean v.weights
+NY.GDP.PCAP.KD              31560.92 35379.84  22297.98    0        
+EG.FEC.RNEW.ZS              0.894    5.613     15.96       0        
+EG.USE.COMM.FO.ZS           88.158   77.424    80.924      0        
+EG.USE.PCAP.KG.OE           3745.566 4134.615  3109.721    0        
+special.EN.ATM.CO2E.PC.1990 9.711    9.722     7.66        0.095    
+special.EN.ATM.CO2E.PC.1991 9.871    9.842     7.794       0.101    
+special.EN.ATM.CO2E.PC.1992 9.661    9.641     7.907       0.092    
+special.EN.ATM.CO2E.PC.1993 9.455    9.517     7.983       0.106    
+special.EN.ATM.CO2E.PC.1994 9.448    9.433     8.011       0.089    
+special.EN.ATM.CO2E.PC.1995 9.275    9.184     7.698       0.075    
+special.EN.ATM.CO2E.PC.1996 9.48     9.47      8.01        0.087    
+special.EN.ATM.CO2E.PC.1997 9.043    9.121     8.018       0.075    
+special.EN.ATM.CO2E.PC.1998 9.094    9.109     7.944       0.069    
+special.EN.ATM.CO2E.PC.1999 9.048    9.026     8.079       0.081    
+special.EN.ATM.CO2E.PC.2000 9.2      9.213     8.263       0.129    
+
+[[2]]
+    w.weights        unit.names unit.numbers
+5       0.009         Argentina            5
+9       0.000         Australia            9
+10      0.000           Austria           10
+12      0.139           Belgium           12
+21      0.001            Brazil           21
+24      0.002          Botswana           24
+25      0.000            Canada           25
+26      0.000       Switzerland           26
+27      0.000             Chile           27
+35      0.000            Cyprus           35
+37      0.207           Germany           37
+43      0.001             Spain           43
+47      0.237            France           47
+49      0.001             Gabon           49
+55      0.000            Greece           55
+66      0.000           Ireland           66
+70      0.000            Israel           70
+71      0.103             Italy           71
+74      0.179             Japan           74
+79      0.000       South Korea           79
+81      0.000           Lebanon           81
+88      0.035        Luxembourg           88
+94      0.001            Mexico           94
+101     0.001         Mauritius          101
+103     0.004          Malaysia          103
+110     0.000       New Zealand          110
+113     0.000            Panama          113
+117     0.003            Poland          117
+119     0.006          Portugal          119
+126     0.039      Saudi Arabia          126
+127     0.000         Singapore          127
+143     0.000 Trinidad & Tobago          143
+144     0.000            Turkey          144
+148     0.002           Uruguay          148
+149     0.000     United States          149
+151     0.007         Venezuela          151
+156     0.020      South Africa          156
+

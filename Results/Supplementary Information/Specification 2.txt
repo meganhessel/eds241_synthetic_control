@@ -1,0 +1,23 @@
+$treated
+[1] "United Kingdom"
+
+$donor.pool
+ [1] "Argentina"         "Australia"         "Austria"           "Belgium"           "Brazil"           
+ [6] "Botswana"          "Canada"            "Switzerland"       "Chile"             "Cyprus"           
+[11] "Germany"           "Spain"             "France"            "Gabon"             "Greece"           
+[16] "Ireland"           "Israel"            "Italy"             "Japan"             "South Korea"      
+[21] "Lebanon"           "Luxembourg"        "Mexico"            "Mauritius"         "Malaysia"         
+[26] "New Zealand"       "Panama"            "Poland"            "Portugal"          "Saudi Arabia"     
+[31] "Singapore"         "Trinidad & Tobago" "Turkey"            "Uruguay"           "United States"    
+[36] "Venezuela"         "South Africa"     
+
+$predictors
+ [1] "NY.GDP.PCAP.KD"              "EG.FEC.RNEW.ZS"              "EG.USE.COMM.FO.ZS"          
+ [4] "EG.USE.PCAP.KG.OE"           "special.EN.ATM.CO2E.PC.1990" "special.EN.ATM.CO2E.PC.1991"
+ [7] "special.EN.ATM.CO2E.PC.1992" "special.EN.ATM.CO2E.PC.1993" "special.EN.ATM.CO2E.PC.1994"
+[10] "special.EN.ATM.CO2E.PC.1995" "special.EN.ATM.CO2E.PC.1996" "special.EN.ATM.CO2E.PC.1997"
+[13] "special.EN.ATM.CO2E.PC.1998" "special.EN.ATM.CO2E.PC.1999" "special.EN.ATM.CO2E.PC.2000"
+
+$time.optimize
+ [1] 1990 1991 1992 1993 1994 1995 1996 1997 1998 1999 2000 2001
+

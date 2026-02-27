@@ -1,0 +1,125 @@
+---
+title: "try_to_replicate"
+format: html
+---
+
+```{r}
+# library(xlsx) # not work for me :( 
+library(readxl)
+```
+
+```{r}
+codes <- read_excel(here::here("Synth", "Data", "Codes_Masterlist.xlsx"), sheet = "Codes")
+
+policies <- read_excel(here::here("Synth", "Data", "Countries and climate policies.xlsx"), sheet = "Countries") %>% 
+  mutate_all(as.character)
+
+WB <- read_excel(here::here("Synth", "Data", "OGHIST.xls"),
+                 sheet = "Country Analytical History",
+                 skip = 4
+                 )%>% 
+  mutate_all(as.character) %>% 
+  slice(-1:-6)
+
+
+# .. Import emissions for Germany from CDIAC ####
+CDIAC <- read.csv(here::here("Synth","Data", "nation.1751_2014.csv")) %>% 
+  select(Nation, Year, Emissions = Total.CO2.emissions.from.fossil.fuels.and.cement.production..thousand.metric.tons.of.C.) %>%
+  filter(Nation == "FORMER GERMAN DEMOCRATIC REPUBLIC" | Nation == "FEDERAL REPUBLIC OF GERMANY")
+
+CDIAC <- spread(CDIAC, Nation, Emissions) %>%
+  mutate(EN.ATM.CO2E.KT = (`FEDERAL REPUBLIC OF GERMANY` + `FORMER GERMAN DEMOCRATIC REPUBLIC`) * 44/12,
+         country = "Germany", iso2c = "DE") %>%
+  select(iso2c, country, year = Year, EN.ATM.CO2E.KT) %>%
+  filter(year >= 1960)
+
+# .. Import population for Kuwait from UN World Population Prospects ####
+WPP <- read_xlsx(here::here("Synth","Data", "WPP2019_POP_F01_1_TOTAL_POPULATION_BOTH_SEXES.xlsx"), 
+                 sheet ="ESTIMATES", 
+                 skip = 16) 
+
+
+WPP <- WPP %>%
+  rename(country = `Region, subregion, country or area *`) %>% 
+  select(country,
+         `1992`:`1994`) %>%
+  filter(country == "Kuwait") %>% 
+  mutate(across(`1992`:`1994`, as.numeric))
+
+# .. Import emissions for Liechtenstein from UNFCCC GHG Inventory ####
+LIE <- read.csv(here::here("Synth","Data", "LIE.1990_2015.csv"))
+
+# .. Import indicators from WDI ####
+countries <- codes %>%
+  filter(WB_Income_Group_Code == "HIC" | 
+           WB_Income_Group_Code == "UMC" |
+           OECD == 1 | 
+           Commonwealth == 1) %>%
+  distinct(ISO3166.2) %>%
+  pull
+
+
+indicators <- c("EN.ATM.CO2E.KT", # CO2 emissions (kt)
+                "EN.ATM.CO2E.PC", # CO2 emissions (metric tons per capita)
+                "NY.GDP.PCAP.KD", # GDP per capita (constant 2010 US$)
+                "NY.GDP.PCAP.KD.ZG", # GDP per capita growth (annual %)
+                "NY.GDP.MKTP.KD.ZG", # GDP growth (annual %)
+                "EG.IMP.CONS.ZS", # Energy imports, net (% of energy use)
+                "EG.FEC.RNEW.ZS", # Renewable energy consumption (% of total final energy consumption)
+                "EG.USE.COMM.FO.ZS", # Fossil fuel energy consumption (% of total)
+                "GC.TAX.TOTL.GD.ZS", # Tax revenue (% of GDP)
+                "EG.GDP.PUSE.KO.PP.KD", # GDP per unit of energy use (constant 2011 PPP $ per kg of oil equivalent)
+                "NY.GDP.TOTL.RT.ZS", # Total natural resources rents (% of GDP)
+                "SE.XPD.TOTL.GD.ZS", # Government expenditure on education, total (% of GDP)
+                "EG.ELC.RNEW.ZS", # Renewable electricity output (% of total electricity output)
+                "EG.USE.PCAP.KG.OE", # Energy use (kg of oil equivalent per capita)
+                "TX.VAL.FUEL.ZS.UN", # Fuel exports (% of merchandise exports)
+                "NE.EXP.GNFS.ZS", # Exports of goods and services (% of GDP)
+                "NE.IMP.GNFS.ZS", # Imports of goods and services (% of GDP)
+                "SP.POP.TOTL", # Population, total
+                "EN.CO2.TRAN.ZS" # CO2 emissions from transport (% of total fuel combustion)
+)
+
+data <- WDI(country = countries, indicator = indicators)
+save(data, file = "Synth/Data/data.Rdata")
+load("Synth/Data/data.Rdata")
+
+
+```
+
+
+```{r}
+
+data[which(data$country == "Germany" & data$year <= 1990), "EN.ATM.CO2E.KT"] <- CDIAC$EN.ATM.CO2E.KT
+
+data <- data %>%
+  mutate(EN.ATM.CO2E.PC = ifelse(country == "Germany" & year <= 1990, 
+                                 EN.ATM.CO2E.KT * 1000 / SP.POP.TOTL, EN.ATM.CO2E.PC))
+
+data[which(data$country == "Kuwait" & data$year >= 1992 & data$year <= 1994), "SP.POP.TOTL"] <- WPP$SP.POP.TOTL
+data <- data %>%
+  mutate(EN.ATM.CO2E.PC = ifelse(country == "Kuwait" & data$year >= 1992 & data$year <= 1994, 
+                                 EN.ATM.CO2E.KT * 1000 / SP.POP.TOTL, EN.ATM.CO2E.PC))
+
+data[which(data$country == "Liechtenstein" & data$year >= 1990 & data$year <= 2015), "EN.ATM.CO2E.KT"] <- LIE$CO2..kt.
+data <- data %>%
+  mutate(EN.ATM.CO2E.PC = ifelse(country == "Liechtenstein" & year >= 1990 & year <= 2015, 
+                                 EN.ATM.CO2E.KT * 1000 / SP.POP.TOTL, EN.ATM.CO2E.PC))
+
+data <- left_join(data, codes %>% 
+                    select(ISO3166.2, ISO3166.3, Country) %>% 
+                    distinct(ISO3166.2, .keep_all = T),
+                  by = c("iso2c" = "ISO3166.2")) %>%
+  select(-c(iso2c, country)) %>%
+  rename(countrycode = ISO3166.3,
+         country = Country) %>%
+  mutate(countryid = group_indices(., countrycode)) %>%
+  select(countryid, countrycode, country, year, everything()) %>%
+  arrange(countryid)
+
+countries <- unique(data$countrycode)
+
+```
+
+
+

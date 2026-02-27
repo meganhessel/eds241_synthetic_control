@@ -4,6 +4,7 @@
 ## ## ## ## ## ## ## ## ## ## ##
 # INDEX                     ####
 ## ## ## ## ## ## ## ## ## ## ##
+
 # Preamble
 # Functions
 # Data
@@ -50,7 +51,7 @@
 # PREAMBLE                  ####
 ## ## ## ## ## ## ## ## ## ## ##
 
-setwd("~/Synth/") # Peregrine server
+#setwd("~/Synth/") # Peregrine server
 #setwd("C:/Users/Alice/Box Sync/LepissierMildenberger/Synth/") # Alice laptop
 #setwd("C:/Users/alepissier/Box Sync/LepissierMildenberger/Synth/") # Alice work
 #setwd("~/Box Sync/LepissierMildenberger/Synth/") # Matto

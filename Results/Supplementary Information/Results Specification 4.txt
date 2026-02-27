@@ -1,0 +1,49 @@
+[[1]]
+                            Treated Synthetic Sample Mean v.weights
+special.EN.ATM.CO2E.PC.1990 9.711   9.727     10.952      0.049    
+special.EN.ATM.CO2E.PC.1991 9.871   9.836     10.566      0.045    
+special.EN.ATM.CO2E.PC.1992 9.661   9.647     11.294      0.094    
+special.EN.ATM.CO2E.PC.1993 9.455   9.485     11.822      0.104    
+special.EN.ATM.CO2E.PC.1994 9.448   9.471     11.963      0.09     
+special.EN.ATM.CO2E.PC.1995 9.275   9.241     11.986      0.134    
+special.EN.ATM.CO2E.PC.1996 9.48    9.456     11.717      0.094    
+special.EN.ATM.CO2E.PC.1997 9.043   9.058     12.043      0.122    
+special.EN.ATM.CO2E.PC.1998 9.094   9.123     11.938      0.092    
+special.EN.ATM.CO2E.PC.1999 9.048   9.06      11.643      0.065    
+special.EN.ATM.CO2E.PC.2000 9.2     9.187     12.183      0.111    
+
+[[2]]
+    w.weights           unit.names unit.numbers
+4       0.001 United Arab Emirates            4
+9       0.001            Australia            9
+10      0.274              Austria           10
+12      0.163              Belgium           12
+16      0.206              Bahamas           16
+23      0.001               Brunei           23
+25      0.002               Canada           25
+26      0.000          Switzerland           26
+35      0.000               Cyprus           35
+37      0.002              Germany           37
+43      0.002                Spain           43
+47      0.007               France           47
+55      0.001               Greece           55
+61      0.000            Hong Kong           61
+63      0.000              Hungary           63
+66      0.001              Ireland           66
+69      0.000              Iceland           69
+70      0.001               Israel           70
+71      0.006                Italy           71
+74      0.199                Japan           74
+79      0.021          South Korea           79
+80      0.000               Kuwait           80
+88      0.068           Luxembourg           88
+90      0.000                Macao           90
+94      0.000               Mexico           94
+110     0.001          New Zealand          110
+117     0.040               Poland          117
+119     0.001             Portugal          119
+122     0.001                Qatar          122
+127     0.000            Singapore          127
+144     0.000               Turkey          144
+149     0.002        United States          149
+
