@@ -176,7 +176,7 @@ WPP <- WPP %>%
 # available on p. 18 of https://www.llv.li/files/au/lie-2017-apr-nir.pdf,
 # in the second row of the table (CO2 emissions excl. net CO2 from LULUCF)
 
-LIE <- read.csv("Data/LIE.1990_2015.csv")
+LIE <- read_csv("Synth/Data/LIE.1990_2015.csv")
 
 
 # .. Import indicators from WDI ####

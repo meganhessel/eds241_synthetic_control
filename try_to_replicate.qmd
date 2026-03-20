@@ -6,10 +6,101 @@ format: html
 ```{r}
 # library(xlsx) # not work for me :( 
 library(readxl)
+library(tidyverse)
 ```
 
+Load Data 
 ```{r}
-codes <- read_excel(here::here("Synth", "Data", "Codes_Masterlist.xlsx"), sheet = "Codes")
+LIE <- read_csv("Data/LIE.1990_2015.csv")
+
+OECD <- load("Data/data_OECD.Rdata")
+
+load("Data/data.Rdata")
+load("Results/Placebo countries/store.obs.Rdata")
+load("Results/Placebo countries/store.synth.Rdata")
+load("Results/Placebo countries/store.gaps.Rdata")
+
+load("Results/Leave-one-out/store.synth.Rdata")
+load("Results/Leave-one-out/store.gaps.Rdata")
+
+load("Results/Placebo years/store.synth.Rdata")
+
+
+codes <- read_excel(here::here("Data", "Codes_Masterlist.xlsx"), sheet = "Codes") %>% 
+  mutate_all(as.character)
+
+policies <- read_excel(here::here("Data", "Countries and climate policies.xlsx"), sheet = "Countries") %>% 
+  mutate_all(as.character)
+
+WB <- read_excel(here::here("Data", "OGHIST.xls"),
+                 sheet = "Country Analytical History",
+                 skip = 4
+                 )%>% 
+  mutate_all(as.character) %>% 
+  slice(-1:-6)  
+  #select(ISO = X.,
+  #       Country = Bank.s.fiscal.year.,
+  #       FY01)
+
+
+
+# Just Germany 
+CDIAC <- read_csv("Data/nation.1751_2014.csv") %>%
+  select(Nation, Year, Emissions = Total.CO2.emissions.from.fossil.fuels.and.cement.production..thousand.metric.tons.of.C.) %>%
+  filter(Nation == "FORMER GERMAN DEMOCRATIC REPUBLIC" | Nation == "FEDERAL REPUBLIC OF GERMANY")
+
+CDIAC <- spread(CDIAC, Nation, Emissions) %>%
+  mutate(EN.ATM.CO2E.KT = (`FEDERAL REPUBLIC OF GERMANY` + `FORMER GERMAN DEMOCRATIC REPUBLIC`) * 44/12,
+         country = "Germany", iso2c = "DE") %>%
+  select(iso2c, country, year = Year, EN.ATM.CO2E.KT) %>%
+  filter(year >= 1960)
+```
+
+
+
+```{r}
+whodat <- function(id) {
+  country <- NA
+  for (i in 1:length(id)){
+    country[i] <- unique(data[which(data$countryid == id[i]), "countrycode"])
+  }
+  return(country)
+}
+
+whodis <- function(ISO) {
+  country <- NA
+  for (i in 1:length(ISO)){
+    country[i] <- unique(data[which(data$countrycode == ISO[i]), "country"])
+  }
+  return(country)
+}
+
+whatname <- function(id) {
+  country <- NA
+  for (i in 1:length(id)){
+    country[i] <- unique(data[which(data$countryid == id[i]), "country"])
+  }
+  return(country)
+}
+
+whichnum <- function(ISO) {
+  num <- data %>%
+    filter(countrycode == ISO) %>%
+    distinct(countryid) %>%
+    pull
+  return(num)
+}
+
+whoder <- function() {
+  unique(data$country)
+}
+
+```
+
+
+```{r}
+codes <- read_excel(here::here("Synth", "Data", "Codes_Masterlist.xlsx"), sheet = "Codes") %>% 
+  mutate_all(as.character)
 
 policies <- read_excel(here::here("Synth", "Data", "Countries and climate policies.xlsx"), sheet = "Countries") %>% 
   mutate_all(as.character)
@@ -19,8 +110,20 @@ WB <- read_excel(here::here("Synth", "Data", "OGHIST.xls"),
                  skip = 4
                  )%>% 
   mutate_all(as.character) %>% 
-  slice(-1:-6)
+  slice(-1:-6) %>% 
+  select(ISO = X.,
+         Country = Bank.s.fiscal.year.,
+         FY01)
 
+
+
+WB <- read.xlsx2("Data/OGHIST.xls", sheetName = "Country Analytical History",
+                 startRow = 5) %>%
+  mutate_all(as.character) %>%
+  slice(-1:-6) %>%
+  select(ISO = X.,
+         Country = Bank.s.fiscal.year.,
+         FY01)
 
 # .. Import emissions for Germany from CDIAC ####
 CDIAC <- read.csv(here::here("Synth","Data", "nation.1751_2014.csv")) %>% 
@@ -120,6 +223,19 @@ data <- left_join(data, codes %>%
 countries <- unique(data$countrycode)
 
 ```
+
+
+
+# TRY AGAIN 
+
+```{r}
+load(here::here("Synth", "Data", "data_OECD_HIC_UMC.Rdata"))
+
+
+
+
+```
+
 
 
 

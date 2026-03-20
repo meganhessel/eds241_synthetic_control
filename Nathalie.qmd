@@ -1,0 +1,470 @@
+---
+title: "Nathalie"
+format: html
+---
+
+## Lépissier & Mildenberger (2021)
+
+This analysis aimed to reproduce the results from Lépissier, Alice & Mildenberger, Matto. (2021). The authors employed a synthetic control method (SCM) to estimate the causal effect of the UK’s 2001 Climate Change Programme (CCP) on the country’s carbon emissions. Their main finding demonstrates that CCP reduced the UK's carbon emissions. CO2 emissions per capita were 9.8% lower in 2005 relative to what they would have been if the CCP had not been passed, demonstrating that unilateral climate policies can still reduce carbon emissions even in the absence of a binding global climate agreement.
+
+### Research Question
+
+**Did United Kingdom's Climate Change Programme (CCP) (launched in 2001) reduce per capita CO₂ emissions?**
+
+The 2001 UK CCP is a complex reform that included a carbon tax on large-scale energy users, industry-negotiated exemptions from the tax for meeting reduction targets, and a voluntary emissions trading scheme. It was one of the first comprehensive climate reform packages passed globally, in advance of action by most other Organisation for Economic Co-operation and Development (OECD) countries. Importantly, there is a limitation to evaluating the post-policy enactment effect, as the EU emissions trading system (EU ETS) was enacted in 2005.
+
+-   $Y$ (outcome): Per capita CO₂ emissions generated from fossil fuels and the manufacture of cement (power sector) (`EN.ATM.CO2E.PC`)
+
+-   Treated unit: United Kingdom (`UK`)
+
+-   Treatment year: 2001
+
+-   Donor pool: 51 countries with either:
+
+    -   \(1\) in OECD or classified by the World Bank as upper middle–income or high-income countries at the time of treatment in 2001
+
+    -   \(2\) Population greater than 250,000,
+
+    -   \(3\) No carbon pricing policy
+
+**How do different donor pools impact the SMC results and robustness checks?**
+
+-   In this study, we investigate and run SCM for 3 different donor pools. This positions the UK's CCP to be evaluated against a wide pool of donor countries by pre-treatment carbon emissions:
+
+    -   \(1\) Countries with similar economic conditions to UK.
+
+    -   \(2\) High income counties with similar economic conditions to UK.
+
+    -   \(3\) High and upper-middle income counties with similar economic conditions to UK.
+
+The Work Bank classifies countries into income categories according to GNI per capita in US dollars. In fiscal year 2001, the World Bank classified high-income (HIC) countries as those with GNI per capita above 9,265 US\$ and upper middle–income (UMC) countries as those with GNI per capita in the 2,996 US\$ to 9,265 US\$ range. “EN.ATM.CO2E.PC” (CO2 emissions per capita in metric tons).
+
+-   additionally, only countries with a population greater than 250,000 without a carbon pricing policy in place in 2001 were considered for the donor pool.
+
+## Data
+
+| Data Name | Includes |
+|---------------------------------|---------------------------------------|
+| `data` | Carbon emissions data from all accessible countries |
+| `data_OECD` | Carbon emissions from countries with similar economic conditions to UK. |
+| `data_OECD_HIC` | Carbon emissions from high income counties with similar economic conditions to UK. |
+| `data_OECD_HIC_UMC` | Carbon emissions from high and upper-middle income counties with similar economic conditions to UK. |
+
+## Study Assumptions
+
+-   \(1\) SUTVA (stable unit treatment values assumption). There is no spillover of CCP enactment to other countries in the donor pool
+
+-   \(1\) Variables used to form the weights must have values for donor pool countries that are similar to those of the UK. This minimizes interpolation bias if the procedure interpolates across regions with very different characteristics
+
+### Approach to address assumptions
+
+-   \(1\) Authors selected the donor sample based on countries that had not passed any major climate legislation until the 2005 European Union's Emissions Trading Scheme (EU ETS). The UK was the only country with the CCP in 2001. This attempts to get the best possible causal effect calculation.
+
+-   \(2\) Using per capita emissions to avoid interpolation bias, meaning emissions data are on the same order of magnitude across pool
+
+-   \(3\) The authors rescale CO2 emissions per capita to a 1990 and 2000 baseline to normalize the pre-treatment window
+
+## Recreating UK Synthetic Control
+
+Lépissier & Mildenberger generated synthetic controls using an optimization algorithm to select donor countries to match pre-CCP emissions trajectories in the UK and the synthetic control as closely as possible. This algorithm generates the synthetic UK minimizing mean square predication error (MSPE) of the pre-treatment outcome variable. The authors take the synthetic control route as it is less restrictive than a difference-in-difference strategy.
+
+We used the {tidysynth} package to generate our synthetic control UK, as compared to the authors' optimized algorithm method which involved a manual econometrics approach.
+
+```{r}
+#| output: false
+library(tidysynth) # for synthetic control
+library(tidyverse)
+library(patchwork) # for combining plots
+library(here)
+```
+
+We sourced the original emissions datasets from 1. OECD countries, 2. high-income countries (OECD), and 3. high-income (OECD_HIC) and upper-middle-income countries (OECD_HIC_UMD).
+
+```{r source-functions}
+#| code-fold: true
+
+
+source(here("R", "load_rdata_files.R"))
+
+# Load in any .Rdata files in directory
+load_rdata_files()
+
+source(here("R", "plot_weights_filtered.R"))
+```
+
+First, we attempted to create a synthetic control that averaged CO2 emissions per capita across the pre-treatment time period by country.
+
+```{r syth1}
+#| code-fold: true
+
+# data_OECD
+scm_data_OECD0 <- data_OECD %>%
+  synthetic_control(
+    outcome = `EN.ATM.CO2E.PC`, 
+    unit = country,
+    time = year,
+    i_unit = "United Kingdom",
+    i_time = 2001,
+    generate_placebos = TRUE) %>%
+  
+  generate_predictor(  # Predictors (pre-treatment averages)
+    time_window = 1980:2001,
+    mean.preT = mean(mean.preT, na.rm = TRUE)) %>%
+  
+  generate_weights(
+    optimization_window = 1980:2001,
+    margin_ipop = 0.02,
+    sigf_ipop = 7,
+    bound_ipop = 6) %>%
+  generate_control() # Generate synthetic control
+
+
+# data_OECD_HIC
+scm_data_OECD_HIC0 <- data_OECD_HIC %>%
+  synthetic_control(
+    outcome = `EN.ATM.CO2E.PC`, 
+    unit = country,
+    time = year,
+    i_unit = "United Kingdom",
+    i_time = 2001,
+    generate_placebos = TRUE) %>%
+  
+  generate_predictor(  # Predictors (pre-treatment averages)
+    time_window = 1980:2001,
+    mean.preT = mean(mean.preT, na.rm = TRUE)) %>%
+  
+  generate_weights(
+    optimization_window = 1980:2001,
+    margin_ipop = 0.02,
+    sigf_ipop = 7,
+    bound_ipop = 6) %>%
+  generate_control() # Generate synthetic control
+
+
+# data_OECD_HIC_UMC
+scm_data_OECD_HIC_UMC0 <- data_OECD_HIC %>%
+  synthetic_control(
+    outcome = `EN.ATM.CO2E.PC`, 
+    unit = country,
+    time = year,
+    i_unit = "United Kingdom",
+    i_time = 2001,
+    generate_placebos = TRUE) %>%
+  
+  generate_predictor(  # Predictors (pre-treatment averages)
+    time_window = 1980:2001,
+    mean.preT = mean(mean.preT, na.rm = TRUE)) %>%
+  
+  generate_weights(
+    optimization_window = 1980:2001,
+    margin_ipop = 0.02,
+    sigf_ipop = 7,
+    bound_ipop = 6) %>%
+  generate_control() # Generate synthetic control
+
+
+```
+
+By plotting the trends of the resulting synthetic controls across time, we can see that this method results in a poor pre-treatment fit, which violates the assumption of the synthetic control method to make a meaningful causal effect estimation.
+
+```{r plots0}
+#| code-fold: true
+#| out-width: "100%"
+#| fig.asp: 1
+
+# data_OECD
+p0_data_OECD <- scm_data_OECD0 %>%
+  plot_trends() +
+  labs(title = "UK vs Synthetic UK (Averaged Across Pre-Treatment Period)",
+       subtitle = "Poor pre-treatment match when donor country emissions are averaged 1980-2000",
+       y = "",
+       x = "", 
+       caption = NULL)+
+  theme(legend.position = "none", 
+        plot.title = element_text(hjust = 0.5))
+
+# data_OECD_HIC
+p0_data_OECD_HIC <- scm_data_OECD_HIC0 %>%
+  plot_trends() +
+  labs(title = "",
+       y = "CO2 per capita (power sector)",
+       x = "", 
+       caption = NULL)+
+  theme(legend.position = "none", 
+        plot.title = element_text(hjust = 0.5))
+
+# data_OECD_HIC_UMC
+p0_data_OECD_HIC_UMC <- scm_data_OECD_HIC_UMC0 %>%
+  plot_trends() +
+  labs(title = "",
+       y = "",
+       x = "")
+
+# Patchwork plots for each dataset on top of one another
+p0_data_OECD / p0_data_OECD_HIC/ p0_data_OECD_HIC_UMC 
+```
+
+Due to this outcome, we generated synthetic outcomes based on yearly emissions by donor country.
+
+```{r synth2}
+#| code-fold: true
+
+# data_OECD
+scm_data_OECD <- data_OECD %>%
+  synthetic_control(
+    outcome = EN.ATM.CO2E.PC,
+    unit = country,
+    time = year,
+    i_unit = "United Kingdom",
+    i_time = 2001,
+    generate_placebos = TRUE) %>%
+  generate_predictor(time_window = 1980, EN.ATM.CO2E.PC_1980 = mean(EN.ATM.CO2E.PC)) %>%
+  generate_predictor(time_window = 1981, EN.ATM.CO2E.PC_1981 = mean(EN.ATM.CO2E.PC)) %>%
+  generate_predictor(time_window = 1982, EN.ATM.CO2E.PC_1982 = mean(EN.ATM.CO2E.PC)) %>%
+  generate_predictor(time_window = 1983, EN.ATM.CO2E.PC_1983 = mean(EN.ATM.CO2E.PC)) %>%
+  generate_predictor(time_window = 1984, EN.ATM.CO2E.PC_1984 = mean(EN.ATM.CO2E.PC)) %>%
+  generate_predictor(time_window = 1985, EN.ATM.CO2E.PC_1985 = mean(EN.ATM.CO2E.PC)) %>%
+  generate_predictor(time_window = 1986, EN.ATM.CO2E.PC_1986 = mean(EN.ATM.CO2E.PC)) %>%
+  generate_predictor(time_window = 1987, EN.ATM.CO2E.PC_1987 = mean(EN.ATM.CO2E.PC)) %>%
+  generate_predictor(time_window = 1988, EN.ATM.CO2E.PC_1988 = mean(EN.ATM.CO2E.PC)) %>%
+  generate_predictor(time_window = 1989, EN.ATM.CO2E.PC_1989 = mean(EN.ATM.CO2E.PC)) %>%
+  generate_predictor(time_window = 1990, EN.ATM.CO2E.PC_1990 = mean(EN.ATM.CO2E.PC)) %>%
+  generate_predictor(time_window = 1991, EN.ATM.CO2E.PC_1991 = mean(EN.ATM.CO2E.PC)) %>%
+  generate_predictor(time_window = 1992, EN.ATM.CO2E.PC_1992 = mean(EN.ATM.CO2E.PC)) %>%
+  generate_predictor(time_window = 1993, EN.ATM.CO2E.PC_1993 = mean(EN.ATM.CO2E.PC)) %>%
+  generate_predictor(time_window = 1994, EN.ATM.CO2E.PC_1994 = mean(EN.ATM.CO2E.PC)) %>%
+  generate_predictor(time_window = 1995, EN.ATM.CO2E.PC_1995 = mean(EN.ATM.CO2E.PC)) %>%
+  generate_predictor(time_window = 1996, EN.ATM.CO2E.PC_1996 = mean(EN.ATM.CO2E.PC)) %>%
+  generate_predictor(time_window = 1997, EN.ATM.CO2E.PC_1997 = mean(EN.ATM.CO2E.PC)) %>%
+  generate_predictor(time_window = 1998, EN.ATM.CO2E.PC_1998 = mean(EN.ATM.CO2E.PC)) %>%
+  generate_predictor(time_window = 1999, EN.ATM.CO2E.PC_1999 = mean(EN.ATM.CO2E.PC)) %>%
+  generate_predictor(time_window = 2000, EN.ATM.CO2E.PC_2000 = mean(EN.ATM.CO2E.PC)) %>%
+  
+  generate_weights(optimization_window = 1980:2001) %>%
+  generate_control()
+
+# data_OECD_HIC
+scm_data_OECD_HIC <- data_OECD_HIC %>%
+  synthetic_control(
+    outcome = EN.ATM.CO2E.PC,
+    unit = country,
+    time = year,
+    i_unit = "United Kingdom",
+    i_time = 2001,
+    generate_placebos = TRUE) %>%
+  generate_predictor(time_window = 1980, EN.ATM.CO2E.PC_1980 = mean(EN.ATM.CO2E.PC)) %>%
+  generate_predictor(time_window = 1981, EN.ATM.CO2E.PC_1981 = mean(EN.ATM.CO2E.PC)) %>%
+  generate_predictor(time_window = 1982, EN.ATM.CO2E.PC_1982 = mean(EN.ATM.CO2E.PC)) %>%
+  generate_predictor(time_window = 1983, EN.ATM.CO2E.PC_1983 = mean(EN.ATM.CO2E.PC)) %>%
+  generate_predictor(time_window = 1984, EN.ATM.CO2E.PC_1984 = mean(EN.ATM.CO2E.PC)) %>%
+  generate_predictor(time_window = 1985, EN.ATM.CO2E.PC_1985 = mean(EN.ATM.CO2E.PC)) %>%
+  generate_predictor(time_window = 1986, EN.ATM.CO2E.PC_1986 = mean(EN.ATM.CO2E.PC)) %>%
+  generate_predictor(time_window = 1987, EN.ATM.CO2E.PC_1987 = mean(EN.ATM.CO2E.PC)) %>%
+  generate_predictor(time_window = 1988, EN.ATM.CO2E.PC_1988 = mean(EN.ATM.CO2E.PC)) %>%
+  generate_predictor(time_window = 1989, EN.ATM.CO2E.PC_1989 = mean(EN.ATM.CO2E.PC)) %>%
+  generate_predictor(time_window = 1990, EN.ATM.CO2E.PC_1990 = mean(EN.ATM.CO2E.PC)) %>%
+  generate_predictor(time_window = 1991, EN.ATM.CO2E.PC_1991 = mean(EN.ATM.CO2E.PC)) %>%
+  generate_predictor(time_window = 1992, EN.ATM.CO2E.PC_1992 = mean(EN.ATM.CO2E.PC)) %>%
+  generate_predictor(time_window = 1993, EN.ATM.CO2E.PC_1993 = mean(EN.ATM.CO2E.PC)) %>%
+  generate_predictor(time_window = 1994, EN.ATM.CO2E.PC_1994 = mean(EN.ATM.CO2E.PC)) %>%
+  generate_predictor(time_window = 1995, EN.ATM.CO2E.PC_1995 = mean(EN.ATM.CO2E.PC)) %>%
+  generate_predictor(time_window = 1996, EN.ATM.CO2E.PC_1996 = mean(EN.ATM.CO2E.PC)) %>%
+  generate_predictor(time_window = 1997, EN.ATM.CO2E.PC_1997 = mean(EN.ATM.CO2E.PC)) %>%
+  generate_predictor(time_window = 1998, EN.ATM.CO2E.PC_1998 = mean(EN.ATM.CO2E.PC)) %>%
+  generate_predictor(time_window = 1999, EN.ATM.CO2E.PC_1999 = mean(EN.ATM.CO2E.PC)) %>%
+  generate_predictor(time_window = 2000, EN.ATM.CO2E.PC_2000 = mean(EN.ATM.CO2E.PC)) %>%
+  
+  generate_weights(optimization_window = 1980:2001) %>%
+  generate_control()
+
+# data_OECD_HIC_UMC
+scm_data_OECD_HIC_UMC <- data_OECD_HIC_UMC %>%
+  synthetic_control(
+    outcome = EN.ATM.CO2E.PC,
+    unit = country,
+    time = year,
+    i_unit = "United Kingdom",
+    i_time = 2001,
+    generate_placebos = TRUE) %>%
+  generate_predictor(time_window = 1980, EN.ATM.CO2E.PC_1980 = mean(EN.ATM.CO2E.PC)) %>%
+  generate_predictor(time_window = 1981, EN.ATM.CO2E.PC_1981 = mean(EN.ATM.CO2E.PC)) %>%
+  generate_predictor(time_window = 1982, EN.ATM.CO2E.PC_1982 = mean(EN.ATM.CO2E.PC)) %>%
+  generate_predictor(time_window = 1983, EN.ATM.CO2E.PC_1983 = mean(EN.ATM.CO2E.PC)) %>%
+  generate_predictor(time_window = 1984, EN.ATM.CO2E.PC_1984 = mean(EN.ATM.CO2E.PC)) %>%
+  generate_predictor(time_window = 1985, EN.ATM.CO2E.PC_1985 = mean(EN.ATM.CO2E.PC)) %>%
+  generate_predictor(time_window = 1986, EN.ATM.CO2E.PC_1986 = mean(EN.ATM.CO2E.PC)) %>%
+  generate_predictor(time_window = 1987, EN.ATM.CO2E.PC_1987 = mean(EN.ATM.CO2E.PC)) %>%
+  generate_predictor(time_window = 1988, EN.ATM.CO2E.PC_1988 = mean(EN.ATM.CO2E.PC)) %>%
+  generate_predictor(time_window = 1989, EN.ATM.CO2E.PC_1989 = mean(EN.ATM.CO2E.PC)) %>%
+  generate_predictor(time_window = 1990, EN.ATM.CO2E.PC_1990 = mean(EN.ATM.CO2E.PC)) %>%
+  generate_predictor(time_window = 1991, EN.ATM.CO2E.PC_1991 = mean(EN.ATM.CO2E.PC)) %>%
+  generate_predictor(time_window = 1992, EN.ATM.CO2E.PC_1992 = mean(EN.ATM.CO2E.PC)) %>%
+  generate_predictor(time_window = 1993, EN.ATM.CO2E.PC_1993 = mean(EN.ATM.CO2E.PC)) %>%
+  generate_predictor(time_window = 1994, EN.ATM.CO2E.PC_1994 = mean(EN.ATM.CO2E.PC)) %>%
+  generate_predictor(time_window = 1995, EN.ATM.CO2E.PC_1995 = mean(EN.ATM.CO2E.PC)) %>%
+  generate_predictor(time_window = 1996, EN.ATM.CO2E.PC_1996 = mean(EN.ATM.CO2E.PC)) %>%
+  generate_predictor(time_window = 1997, EN.ATM.CO2E.PC_1997 = mean(EN.ATM.CO2E.PC)) %>%
+  generate_predictor(time_window = 1998, EN.ATM.CO2E.PC_1998 = mean(EN.ATM.CO2E.PC)) %>%
+  generate_predictor(time_window = 1999, EN.ATM.CO2E.PC_1999 = mean(EN.ATM.CO2E.PC)) %>%
+  generate_predictor(time_window = 2000, EN.ATM.CO2E.PC_2000 = mean(EN.ATM.CO2E.PC)) %>%
+  
+  generate_weights(optimization_window = 1980:2001) %>%
+  generate_control()
+
+```
+
+Plotting the outcomes of synthetic control across all 3 donor pool options, we see a much better pre-treatment fit than the previous method of synthetic control.
+
+```{r plots1}
+#| code-fold: true
+#| out-width: "100%"
+#| fig.asp: 1
+
+# data_OECD
+p1_data_OECD <- scm_data_OECD %>%
+  plot_trends() +
+  labs(title = "UK vs Synthetic UK (Averaged by Year)",
+       subtitle = "Good pre-treatment fit when donor country emissions are assessed by year",
+       y = "",
+       x = "", 
+       caption = NULL)+
+  theme(legend.position = "none", 
+        plot.title = element_text(hjust = 0.5))
+
+# data_OECD_HIC
+p1_data_OECD_HIC <- scm_data_OECD_HIC %>%
+  plot_trends() +
+  labs(title = "",
+       y = "CO2 per capita (power sector)",
+       x = "", 
+       caption = NULL) +
+  theme(legend.position = "none")
+
+# data_OECD_HIC_UMC
+p1_data_OECD_HIC_UMC <- scm_data_OECD_HIC_UMC %>%
+  plot_trends() +
+  labs(title = "",
+       y = "",
+       x = "")
+
+p1_data_OECD / p1_data_OECD_HIC / p1_data_OECD_HIC_UMC
+```
+
+Since the pre-treatment fit assumption is met in our synthetic control recreation, we go on to compare gaps between synthetic UK and observed UK emissions to evaluate treatment effect.
+
+## Plot Gaps (Treatment Effect)
+
+```{r gap-table}
+#| code-fold: true
+
+scm_data_OECD_HIC_UMC %>%
+  filter(.id == "United Kingdom", .placebo == 0) %>%
+  pull(.synthetic_control) %>%
+  .[[1]] %>% 
+  mutate(gap = real_y - synth_y) %>%
+  filter(time_unit >= 2001)
+```
+
+```{r synth-weights-table}
+#| code-fold: true
+
+scm_data_OECD %>%
+  grab_unit_weights() %>%
+  arrange(desc(weight)) %>% 
+  filter(weight > 0.01)
+
+scm_data_OECD_HIC %>% 
+    grab_unit_weights() %>%
+  arrange(desc(weight)) %>% 
+  filter(weight > 0.01)
+
+scm_data_OECD_HIC_UMC %>% 
+    grab_unit_weights() %>%
+  arrange(desc(weight)) %>% 
+filter(weight > 0.01)
+```
+
+```{r  synth-weights-plots}
+#| code-fold: true
+
+scm_data_OECD %>% 
+    plot_weights_filtered()
+
+scm_data_OECD_HIC %>% 
+    plot_weights_filtered()
+    
+scm_data_OECD_HIC_UMC %>% 
+    plot_weights_filtered()
+```
+
+## MSPE Ratios
+
+Comparing MSPE is an integral element in the orginal study, as minimizing differences ensures the best synthetic control outcome. The pre-treatment MSPE of the best fitted donor pool was 1.24 × 10−4. The MSPE should be as close to 0 as possible. Based on this, our best fitted synthetic pool is the high income and upper middle income pool.
+
+```{r mspe-uk}
+scm_data_OECD %>%
+  grab_significance() %>%  
+  filter(unit_name == "United Kingdom")
+
+scm_data_OECD_HIC %>%
+  grab_significance() %>%  
+  filter(unit_name == "United Kingdom")
+
+scm_data_OECD_HIC_UMC %>%
+  grab_significance() %>% 
+  filter(unit_name == "United Kingdom")
+```
+
+```{r mspe-top-donors}
+scm_data_OECD_HIC_UMC %>%
+  grab_significance() %>%
+  filter(pre_mspe < 5 * min(pre_mspe[type == "Treated"])) %>%
+  arrange(desc(mspe_ratio))
+```
+
+# Finding difference in means with pre-treatment values- this is our main result
+
+```{r final-plot}
+#| out-width: "100%"
+#| fig.asp: 1
+
+scm_data_OECD_HIC_UMC %>%
+    # Extract values from balance table
+    grab_balance_table() %>%
+    # Get differences between actual UK and synthetic and compare to donor differences
+    mutate(
+        synth_diff = `United Kingdom` - `synthetic_United Kingdom`,
+        donor_diff = `United Kingdom` - donor_sample,
+        year = as.integer(str_extract(variable, "\\d{4}"))
+    ) %>%
+    # Make into a tidy data format
+    pivot_longer(
+        cols = c(synth_diff, donor_diff),
+        names_to = "type",
+        values_to = "diff"
+    ) %>%
+    # Recode values to match those in paper result
+    mutate(type = recode(type, "synth_diff" = "Synthetic control", "donor_diff" = "Unweighted sample")) %>%
+    # Plot
+    ggplot(aes(x = diff, y = factor(year), color = type)) +
+    geom_point(size = 3) +
+    geom_vline(xintercept = 0, linetype = "dashed") +
+    # Match colors used by paper figure
+    scale_color_manual(values = c(
+        "Synthetic control" = "#E07B6A",
+        "Unweighted sample" = "#5BBCD6"
+    )) +
+    labs(
+        x = "Difference in means with pre-treatment values in the UK",
+        y = "Year",
+        # Take out legend title the lazy way
+        color = "",
+        title = "Balance in weighted synthetic control and in unweighted sample"
+    ) +
+    # Get all the lines out
+    theme_classic()
+```
+
+### Reference
+
+Lépissier, Alice & Mildenberger, Matto. (2021). Unilateral climate policies can substantially reduce national carbon pollution. Climatic Change. 166. 10.1007/s10584-021-03111-2.
